@@ -8,6 +8,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        int[] range = {7, 5, 7, 3, 10, 2};
+        System.out.println(BasicUtils.findMax(range));
     }
 }
