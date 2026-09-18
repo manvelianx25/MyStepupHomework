@@ -3,6 +3,24 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * В классе BasicUtils перечислены все методы из задания №1 курса АТ на Java
+ * <p>
+ * Задача 1 - метод isEven <br>
+ * Задача 2 - метод checkAccess <br>
+ * Задача 3 - метод isPositive <br>
+ * Задача 4 - метод getGrade <br>
+ * Задача 5 - метод blastOff <br>
+ * Задача 6 - метод sumToN <br>
+ * Задача 7 - метод hasBug <br>
+ * Задача 8 - метод getEvenInRange <br>
+ * Задача 9 - метод findMax <br>
+ * Задача 10 - метод reverse <br>
+ * Задача 11 - метод calcAverage <br>
+ * Задача 12 - метод removeSpecificName <br>
+ * </p>
+ */
+
 public class BasicUtils {
     public static boolean isEven(int n) {
         return n % 2 == 0;
@@ -28,7 +46,7 @@ public class BasicUtils {
         } else if (score >= 81 && score <= 100) {
             return "A";
         } else {
-            return "Error";
+            return "Error!";
         }
     }
 
@@ -62,14 +80,14 @@ public class BasicUtils {
         if (messages == null) {
             return false;
         }
-
         for (String message : messages) {
-            if (message.equalsIgnoreCase("bug")) {
+            if (message != null && message.equalsIgnoreCase("bug")) {
                 return true;
             }
         }
         return false;
     }
+
 
     public static String getEvenInRange(int start, int end) {
         if (start > end) {
@@ -93,20 +111,23 @@ public class BasicUtils {
     }
 
     public static int findMax(int[] arr) {
-        int maxValue = 0;
+        if (arr == null || arr.length == 0) {
+            throw new IllegalArgumentException("Array must not be null or empty");
+        }
 
+        // берём первый элемент как начальный максимум
+        int maxValue = arr[0];
         for (int i : arr) {
             if (i > maxValue) {
                 maxValue = i;
             }
         }
-
         return maxValue;
     }
 
     public static String[] reverse(String[] arr) {
         if (arr == null) {
-            return null; // или можно кинуть IllegalArgumentException, зависит от ТЗ
+            return null;
         }
 
         String[] result = new String[arr.length];
@@ -118,10 +139,11 @@ public class BasicUtils {
 
     public static double calcAverage(List<Integer> list) {
         if (list == null || list.isEmpty()) {
-            return 0.0; // или можно выбросить IllegalArgumentException — зависит от требований
+            return 0.0;
         }
 
-        long sum = 0;          // long, чтобы избежать переполнения при больших суммах
+        // long, чтобы избежать переполнения при больших суммах
+        long sum = 0;
         for (int num : list) {
             sum += num;
         }
@@ -131,7 +153,7 @@ public class BasicUtils {
 
     public static List<String> removeSpecificName(List<String> list, String nameToRemove) {
         if (list == null) {
-            return null; // или вернуть пустой список — зависит от требований
+            return null;
         }
 
         List<String> result = new ArrayList<>();
