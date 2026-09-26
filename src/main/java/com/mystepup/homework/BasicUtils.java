@@ -27,11 +27,11 @@ public class BasicUtils {
     }
 
     public static String checkAccess(int age) {
-        return age > 18 ? "Allow" : "Denied";
+        return age > 18 ? "Allowed" : "Denied";
     }
 
     public static boolean isPositive(int n) {
-        return n >= 0;
+        return n >= 0 ? true : false;
     }
 
     public static String getGrade(int score) {

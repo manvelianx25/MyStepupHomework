@@ -1,38 +1,34 @@
 plugins {
-    java
+    id("java")
 }
+
+group = "com.mystepup"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.1")
+    testImplementation(platform("org.junit:junit-bom:5.10.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+// Запуск тестов требует сначала скомпилировать код и тесты
 tasks.test {
     useJUnitPlatform()
-    outputs.upToDateWhen { false }
+    dependsOn(tasks.classes, tasks.compileTestJava)
     testLogging {
-        events("standardOut", "standardError", "passed", "failed", "skipped")
+        events("passed", "failed")
+        showStandardStreams = true // чтобы строки TEST PASSED/FAILED были видны в отчёте Gradle
     }
-}
-
-// ЗАДАЧА 1: Запускает все тесты
-tasks.register("runAllTests") {
-    description = "Запускает все тесты в проекте"
-    dependsOn(tasks.test)
-}
-
-// ЗАДАЧА 2: Пишет "Test run is over" после завершения первой
-tasks.register("notifyTestCompletion") {
-    description = "Выводит сообщение об окончании прогона тестов"
-    dependsOn("runAllTests")
-
     doLast {
         println("Test run is over")
     }
+}
+
+// Кастомный таск: build автоматически запускает проверку тестами
+tasks.build {
+    dependsOn(tasks.test)
 }
