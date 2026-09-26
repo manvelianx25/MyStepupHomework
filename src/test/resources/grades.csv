@@ -1,0 +1,12 @@
+score,expected
+27,D
+85,A
+7,E
+0,E
+75,B
+41,C
+100,A
+101,Error!
+-5,Error!
+60,A
+59,B
