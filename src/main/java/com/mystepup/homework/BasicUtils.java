@@ -1,7 +1,9 @@
 package com.mystepup.homework;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * В классе com.mystepup.homework.BasicUtils перечислены все методы из задания №1 курса АТ на Java
@@ -171,4 +173,51 @@ public class BasicUtils {
         }
         return result;
     }
+
+    public static boolean hasWordInSentence(String sentence, String word) {
+        if (sentence == null || word == null) {
+            return false;
+        }
+        String[] words = sentence.split("\\W+");
+
+        for (String searchedWord : words) {
+            if (searchedWord.equalsIgnoreCase(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getLastLongestWord(String[] words) {
+        String longestWord = "";
+
+        for (String word : words) {
+            // специально допустил ошибку в условии, по требованиям ДЗ
+            // Данный метод будет возвращать не последнее встречающееся длинное слово, а первое
+            // (для последнего нужно нестрогое сравнение <=)
+            if (longestWord.length() < word.length()) {
+                longestWord = word;
+            }
+        }
+
+        return longestWord;
+    }
+
+    public static Set<Integer> getUniqueNumbers(List<Integer> numbers) {
+        return new HashSet<>(numbers);
+    }
+
+    public static int[] sortNumbers(int[] numbers) {
+        for (int i = 0; i < numbers.length - 1; i++) {
+            for (int j = 0; j < numbers.length - 1 - i; j++) {
+                if (numbers[j] > numbers[j + 1]) {
+                    int temp = numbers[j];
+                    numbers[j] = numbers[j + 1];
+                    numbers[j + 1] = temp;
+                }
+            }
+        }
+        return numbers;
+    }
+
 }
