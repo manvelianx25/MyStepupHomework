@@ -182,8 +182,8 @@ class BasicUtilsTest {
         String[] words = {"One", "Two", "Three-1", "Four", "Three-2"};
         String actualResult = BasicUtils.getLastLongestWord(words);
         String expectedResult = "Three-2";
-        assertThat(actualResult).
-                as("Последним самым длинным найденным словом в массиве %s должно быть '%s'",
+        assertThat(actualResult)
+                .as("Последним самым длинным найденным словом в массиве %s должно быть '%s'",
                         Arrays.toString(words), expectedResult).isEqualTo(expectedResult);
     }
 
@@ -196,8 +196,8 @@ class BasicUtilsTest {
 
         Set<Integer> expectedResult = Set.of(1, 2, 3, 4);
 
-        assertThat(actualResult).
-                as("Уникальными числами для списка %s должны быть %s",
+        assertThat(actualResult)
+                .as("Уникальными числами для списка %s должны быть %s",
                         numbers, expectedResult).containsExactlyInAnyOrderElementsOf(expectedResult);
     }
 }
