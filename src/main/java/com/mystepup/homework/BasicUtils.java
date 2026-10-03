@@ -20,6 +20,9 @@ import java.util.Set;
  * Задача 10 - метод reverse <br>
  * Задача 11 - метод calcAverage <br>
  * Задача 12 - метод removeSpecificName <br>
+ * Задача 13* (3-е ДЗ) - метод hasWordInSentence <br>
+ * Задача 14* (3-е ДЗ) - метод getLastLongestWord <br>
+ * Задача 15* (3-е ДЗ) - метод getUniqueNumbers  <br>
  * </p>
  */
 
