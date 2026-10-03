@@ -343,7 +343,6 @@ class BasicUtilsTest {
     @Test
     @DisplayName("Проверка сортировки массива чисел (sortNumbers)")
     @Tag("array-sorting") // Тег для фильтрации: можно запустить отдельно ./gradlew test -PtagName=array-sorting
-    @Tag("boundary")       // Проверка граничных случаев (пустой массив, один элемент)
     void sortNumbersTest(TestInfo testInfo) {
         // --- Случай 1: Обычный массив со случайными числами ---
         int[] inputArray = {5, 2, 9, 1, 5, 6};
