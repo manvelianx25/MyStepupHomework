@@ -32,10 +32,10 @@ class BasicUtilsTest {
     @Test
     void isEvenRandom() {
         int n = random.nextInt(100) + 1; // 1..100
-        boolean expected = n % 2 == 0;
-        boolean actual = BasicUtils.isEven(n);
-        System.out.printf("isEven(%d): ожидалось %s, получено %s%n", n, expected, actual);
-        System.out.println(expected == actual ? "TEST PASSED" : "TEST FAILED");
+        boolean expectedResult = n % 2 == 0;
+        boolean actualResult = BasicUtils.isEven(n);
+        System.out.printf("isEven(%d): ожидалось %s, получено %s%n", n, expectedResult, actualResult);
+        System.out.println(expectedResult == actualResult ? "TEST PASSED" : "TEST FAILED");
     }
 
     @Test
@@ -173,7 +173,8 @@ class BasicUtilsTest {
         boolean actualResult = BasicUtils.hasWordInSentence(sentence, word);
         assertThat(actualResult)
                 .as("Предложение '%s' должно содержать слово '%s'",
-                        sentence, word).isTrue();
+                        sentence, word)
+                .isTrue();
     }
 
     // АТ провален из-за реализации метода
@@ -184,7 +185,8 @@ class BasicUtilsTest {
         String expectedResult = "Three-2";
         assertThat(actualResult)
                 .as("Последним самым длинным найденным словом в массиве %s должно быть '%s'",
-                        Arrays.toString(words), expectedResult).isEqualTo(expectedResult);
+                        Arrays.toString(words), expectedResult)
+                .isEqualTo(expectedResult);
     }
 
     // еще один проваленный АТ, но уже из-за реализации теста
@@ -198,6 +200,7 @@ class BasicUtilsTest {
 
         assertThat(actualResult)
                 .as("Уникальными числами для списка %s должны быть %s",
-                        numbers, expectedResult).containsExactlyInAnyOrderElementsOf(expectedResult);
+                        numbers, expectedResult)
+                .containsExactlyInAnyOrderElementsOf(expectedResult);
     }
 }
