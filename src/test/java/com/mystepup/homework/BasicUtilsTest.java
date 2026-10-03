@@ -8,10 +8,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class BasicUtilsTest {
 
@@ -25,8 +24,7 @@ class BasicUtilsTest {
 
     @AfterEach
     void afterEach() {
-        System.out.println("Test method end\n" +
-                "========================");
+        System.out.println("Test method end\n" + "========================");
     }
 
     // ==================== @Test (4 метода) ====================
@@ -106,10 +104,7 @@ class BasicUtilsTest {
     void reverseRepeated() {
         String[] arr = random.ints(6, 0, 100).mapToObj(String::valueOf).toArray(String[]::new);
         String[] actual = BasicUtils.reverse(arr);
-        boolean correct = actual != null
-                && actual.length == arr.length
-                && actual[0].equals(arr[arr.length - 1])
-                && actual[actual.length - 1].equals(arr[0]);
+        boolean correct = actual != null && actual.length == arr.length && actual[0].equals(arr[arr.length - 1]) && actual[actual.length - 1].equals(arr[0]);
         System.out.printf("reverse(%s): результат %s, корректно: %s%n", Arrays.toString(arr), Arrays.toString(actual), correct);
         System.out.println(correct ? "TEST PASSED" : "TEST FAILED");
     }
@@ -161,21 +156,42 @@ class BasicUtilsTest {
 
     // Данные из @CsvSource: имена разделены точкой с запятой, чтобы не конфликтовать с разделителем CSV
     @ParameterizedTest
-    @CsvSource({
-            "Alice;Bob;Carol;Alice;Dave, Alice",
-            "Bob;Carol;Dave, Alice",
-            "Alice;Alice;Alice, Alice",
-            "Bob;Bob, Bob",
-            "Alice;Carol, Dave"
-    })
+    @CsvSource({"Alice;Bob;Carol;Alice;Dave, Alice", "Bob;Carol;Dave, Alice", "Alice;Alice;Alice, Alice", "Bob;Bob, Bob", "Alice;Carol, Dave"})
     void removeSpecificNameParameterized(String namesRaw, String nameToRemove) {
         List<String> list = new ArrayList<>(Arrays.asList(namesRaw.split(";")));
         long expectedRemoved = list.stream().filter(s -> s.equals(nameToRemove)).count();
         List<String> actual = BasicUtils.removeSpecificName(list, nameToRemove);
-        boolean correct = actual != null
-                && actual.stream().noneMatch(s -> s.equals(nameToRemove))
-                && actual.size() == list.size() - expectedRemoved;
+        boolean correct = actual != null && actual.stream().noneMatch(s -> s.equals(nameToRemove)) && actual.size() == list.size() - expectedRemoved;
         System.out.printf("removeSpecificName(%s, «%s»): осталось %s%n", list, nameToRemove, actual);
         System.out.println(correct ? "TEST PASSED" : "TEST FAILED");
+    }
+
+    @Test
+    void hasWordInSentencePositiveTest() {
+        String sentence = "Today is a good day!";
+        String word = "good";
+        boolean actualResult = BasicUtils.hasWordInSentence(sentence, word);
+        assertThat(actualResult).as("Sentence '%s' should contain word '%s'", sentence, word).isTrue();
+    }
+
+    // АТ провален из-за реализации метода
+    @Test
+    void getLastLongestWordTest() {
+        String[] words = {"One", "Two", "Three-1", "Four", "Three-2"};
+        String actualResult = BasicUtils.getLastLongestWord(words);
+        String expectedResult = "Three-2";
+        assertThat(actualResult).as("The last longest word in the array %s should be '%s'", Arrays.toString(words), expectedResult).isEqualTo(expectedResult);
+    }
+
+    // еще один проваленный АТ, но уже из-за реализации теста
+    @Test
+    void getUniqueNumbersTest() {
+        List<Integer> numbers = List.of(1, 2, 2, 3, 3, 3, 4, -4, -6);
+
+        Set<Integer> actualResult = BasicUtils.getUniqueNumbers(numbers);
+
+        Set<Integer> expectedResult = Set.of(1, 2, 3, 4);
+
+        assertThat(actualResult).as("Unique numbers for list %s should be %s", numbers, expectedResult).containsExactlyInAnyOrderElementsOf(expectedResult);
     }
 }
