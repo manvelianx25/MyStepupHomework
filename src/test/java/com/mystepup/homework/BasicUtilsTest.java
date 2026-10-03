@@ -171,7 +171,9 @@ class BasicUtilsTest {
         String sentence = "Today is a good day!";
         String word = "good";
         boolean actualResult = BasicUtils.hasWordInSentence(sentence, word);
-        assertThat(actualResult).as("Sentence '%s' should contain word '%s'", sentence, word).isTrue();
+        assertThat(actualResult)
+                .as("Предложение '%s' должно содержать слово '%s'",
+                        sentence, word).isTrue();
     }
 
     // АТ провален из-за реализации метода
@@ -180,7 +182,9 @@ class BasicUtilsTest {
         String[] words = {"One", "Two", "Three-1", "Four", "Three-2"};
         String actualResult = BasicUtils.getLastLongestWord(words);
         String expectedResult = "Three-2";
-        assertThat(actualResult).as("The last longest word in the array %s should be '%s'", Arrays.toString(words), expectedResult).isEqualTo(expectedResult);
+        assertThat(actualResult).
+                as("Последним самым длинным найденным словом в массиве %s должно быть '%s'",
+                        Arrays.toString(words), expectedResult).isEqualTo(expectedResult);
     }
 
     // еще один проваленный АТ, но уже из-за реализации теста
@@ -192,6 +196,8 @@ class BasicUtilsTest {
 
         Set<Integer> expectedResult = Set.of(1, 2, 3, 4);
 
-        assertThat(actualResult).as("Unique numbers for list %s should be %s", numbers, expectedResult).containsExactlyInAnyOrderElementsOf(expectedResult);
+        assertThat(actualResult).
+                as("Уникальными числами для списка %s должны быть %s",
+                        numbers, expectedResult).containsExactlyInAnyOrderElementsOf(expectedResult);
     }
 }
