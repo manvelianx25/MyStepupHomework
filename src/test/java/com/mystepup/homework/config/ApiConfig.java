@@ -1,18 +1,15 @@
 package com.mystepup.homework.config;
 
+import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.authentication.PreemptiveBasicAuthScheme;
 
 public final class ApiConfig {
 
     private static final String BASE_URI =
-            System.getProperty(
-                    "baseUri",
-                    "http://localhost:8080"
-            );
+            System.getProperty("baseUri", "http://localhost:8080");
 
     private static final String LOGIN =
             System.getenv().getOrDefault("API_LOGIN", "admin");
@@ -21,6 +18,10 @@ public final class ApiConfig {
             System.getenv().getOrDefault("API_PASSWORD", "secret123");
 
     private ApiConfig() {
+    }
+
+    public static String baseUri() {
+        return BASE_URI;
     }
 
     public static RequestSpecification basicRq() {
@@ -43,9 +44,5 @@ public final class ApiConfig {
                 .addRequestSpecification(basicRq())
                 .setAuth(auth)
                 .build();
-    }
-
-    public static String baseUri() {
-        return BASE_URI;
     }
 }
