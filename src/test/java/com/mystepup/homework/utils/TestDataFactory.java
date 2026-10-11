@@ -1,4 +1,3 @@
-
 package com.mystepup.homework.utils;
 
 import java.math.BigDecimal;

@@ -1,11 +1,11 @@
-
 package com.mystepup.homework;
 
 import com.mystepup.homework.client.GoodsClient;
 import com.mystepup.homework.config.ApiConfig;
 import com.mystepup.homework.utils.TestDataFactory;
-import io.restassured.response.Response;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -14,15 +14,27 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.comparesEqualTo;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 
+@Tag("api")
 public class RestAssuredTest {
 
     private final GoodsClient goodsClient = new GoodsClient();
 
-    // Тест 1. Получаем список без использования RequestSpecification
+    // Вспомогательный метод: создаёт товар и возвращает его ID
+    private long createGoodsAndGetId() {
+        String name = TestDataFactory.generateGoodsName();
+        BigDecimal price = TestDataFactory.generateGoodsPrice();
+
+        Response response = goodsClient.createGoods(name, price);
+
+        response.then()
+                .statusCode(200);
+
+        return response.jsonPath().getLong("data.id");
+    }
+
+    // Задача 1. Тест 1: список без RequestSpecification
     @Test
     void getGoodsListTest() {
         given()
@@ -39,7 +51,7 @@ public class RestAssuredTest {
                 .body("goods", empty());
     }
 
-    // Тест 2. Получаем список через RequestSpecification
+    // Задача 1. Тест 2: список с RequestSpecification
     @Test
     void getGoodsListWithSpecTest() {
         goodsClient.getGoodsList()
@@ -49,7 +61,7 @@ public class RestAssuredTest {
                 .body("goods", empty());
     }
 
-    // Тест 3. Создаём товар и проверяем его средствами REST Assured
+    // Задача 1. Тест 3: создание товара и проверка через REST Assured
     @Test
     void createGoodsAndCheckInListTest() {
         String name = TestDataFactory.generateGoodsName();
@@ -71,7 +83,7 @@ public class RestAssuredTest {
                 );
     }
 
-    // Тест 4. Создаём товар и проверяем его с помощью AssertJ
+    // Задача 1. Тест 4: создание товара и проверка через AssertJ
     @Test
     void createGoodsAndCheckWithAssertJTest() {
         String name = TestDataFactory.generateGoodsName();
@@ -103,5 +115,124 @@ public class RestAssuredTest {
 
         assertThat(actualPrice)
                 .isEqualByComparingTo(price);
+    }
+
+    // POST /goods/add: некорректный JSON -> 400
+    @Test
+    void createGoodsWithInvalidJsonTest() {
+        goodsClient.createGoodsWithRawBody("{")
+                .then()
+                .statusCode(400);
+    }
+
+    // GET /goods/{id}: существующий товар -> 200
+    @Test
+    void getGoodsByIdTest() {
+        long id = createGoodsAndGetId();
+
+        goodsClient.getGoodsById(id)
+                .then()
+                .statusCode(200);
+    }
+
+    // GET /goods/{id}: отсутствующий товар -> 404
+    @Test
+    void getGoodsByMissingIdTest() {
+        goodsClient.getGoodsById(Long.MAX_VALUE)
+                .then()
+                .statusCode(404);
+    }
+
+    // DELETE /goods/{id}: существующий товар -> 200
+    @Test
+    void deleteGoodsTest() {
+        long id = createGoodsAndGetId();
+
+        goodsClient.deleteGoods(id)
+                .then()
+                .statusCode(200);
+
+        // Дополнительно проверяем, что товар больше не доступен
+        goodsClient.getGoodsById(id)
+                .then()
+                .statusCode(404);
+    }
+
+    // DELETE /goods/{id}: отсутствующий товар -> 404
+    @Test
+    void deleteMissingGoodsTest() {
+        goodsClient.deleteGoods(Long.MAX_VALUE)
+                .then()
+                .statusCode(404);
+    }
+
+    // PATCH /goods/{id}: успешное обновление -> 200
+    @Test
+    void updateGoodsTest() {
+        long id = createGoodsAndGetId();
+        String updatedName = TestDataFactory.generateGoodsName();
+        BigDecimal updatedPrice = TestDataFactory.generateGoodsPrice();
+
+        goodsClient.updateGoods(id, updatedName, updatedPrice)
+                .then()
+                .statusCode(200);
+
+        goodsClient.getGoodsList()
+                .then()
+                .statusCode(200)
+                .body("goods.name", hasItem(updatedName));
+    }
+
+    // PATCH /goods/{id}: дублирование имени -> 400
+    @Test
+    void updateGoodsWithDuplicateNameTest() {
+        long firstId = createGoodsAndGetId();
+        long secondId = createGoodsAndGetId();
+
+        Response response = goodsClient.getGoodsList()
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        List<Map<String, Object>> goods =
+                response.jsonPath().getList("goods");
+
+        String firstName = goods.stream()
+                .filter(good ->
+                        ((Number) good.get("id")).longValue() == firstId)
+                .map(good -> (String) good.get("name"))
+                .findFirst()
+                .orElseThrow(() ->
+                        new AssertionError("Первый товар не найден")
+                );
+
+        BigDecimal price = TestDataFactory.generateGoodsPrice();
+
+        goodsClient.updateGoods(secondId, firstName, price)
+                .then()
+                .statusCode(400);
+    }
+
+    // PATCH /goods/{id}: отсутствующий товар -> 404
+    @Test
+    void updateMissingGoodsTest() {
+        goodsClient.updateGoods(
+                        Long.MAX_VALUE,
+                        TestDataFactory.generateGoodsName(),
+                        TestDataFactory.generateGoodsPrice()
+                )
+                .then()
+                .statusCode(404);
+    }
+
+    // GET /goods/list: успешное получение списка -> 200
+    @Test
+    void getGoodsListStatusTest() {
+        goodsClient.getGoodsList()
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("goods", org.hamcrest.Matchers.notNullValue());
     }
 }
